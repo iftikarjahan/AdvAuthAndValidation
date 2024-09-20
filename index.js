@@ -2,6 +2,10 @@ const express=require("express");
 const app=express();   //create an express app
 const path=require("path"); //for using in express.static
 
+// for parsing the request
+const bodyParser=require("body-parser");
+app.use(bodyParser.urlencoded({extended:false}));
+
 // setting the views
 app.set('views', './views');
 app.set('view engine', 'ejs');
