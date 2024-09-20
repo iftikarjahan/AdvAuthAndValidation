@@ -10,5 +10,7 @@ router.get("/login",controllers.getLoginPage);
 
 router.get("/signIn",controllers.getSignInPage);
 
+router.post("/signin",controllers.postSignInController);
+
 module.exports=router;
 

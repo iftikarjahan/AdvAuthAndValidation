@@ -1,5 +1,4 @@
-const userStore=[];
-
+const getDb=require("../util/database").getDb;
 
 class User{
     constructor(name,email,password){
@@ -7,13 +6,12 @@ class User{
         this.email=email;
         this.password=password;
     }
-
+    
     save(){
-        return userStore.push(this);
+        const db=getDb();
+        return db.collection("users").insertOne(this);
     }
+
 }
 
-module.exports={
-    userStore,
-    User
-}
+module.exports=User;
