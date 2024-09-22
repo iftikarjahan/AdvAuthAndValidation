@@ -12,5 +12,11 @@ router.get("/signIn",controllers.getSignInPage);
 
 router.post("/signin",controllers.postSignInController);
 
+router.post("/login",controllers.postLoginController);
+
+router.get("/afterLogin",controllers.getAfterLogin);
+
+router.post("/logout",controllers.postLogoutController);
+
 module.exports=router;
 
