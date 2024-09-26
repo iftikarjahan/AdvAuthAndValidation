@@ -2,6 +2,8 @@ const express=require("express");
 const router=express.Router();
 const controllers=require("../controllers/allControllers");
 
+
+
 router.get("/",controllers.allContrllers);
 
 router.get("/page2",controllers.page2Controller);

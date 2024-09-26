@@ -1,7 +1,7 @@
 const express = require("express");
 const app = express(); //create an express app
 const path = require("path"); //for using in express.static
-const session=require("express-session");
+const session = require("express-session");
 
 // for connecting the database
 const mongoConnect = require("./util/database").mongoConnect;
@@ -36,7 +36,13 @@ app.use(
   })
 );
 
+
+
+
+
+
 const allRoutes = require("./routes/allRoutes");
+
 
 app.use(allRoutes);
 
@@ -47,3 +53,4 @@ mongoConnect((client) => {
     console.log(`Express app listening at http://localhost:${port}`);
   });
 });
+
