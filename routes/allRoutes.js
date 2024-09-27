@@ -20,5 +20,13 @@ router.get("/afterLogin",controllers.getAfterLogin);
 
 router.post("/logout",controllers.postLogoutController);
 
+router.get("/reset-password",controllers.getResetPasswordController);
+
+router.post("/reset-password",controllers.postResetPassword);
+
+router.get("/reset-password/:token",controllers.getResetPasswordForm);
+
+router.post("/after-reset-password",controllers.postAfterResetPasswordController);
+
 module.exports=router;
 

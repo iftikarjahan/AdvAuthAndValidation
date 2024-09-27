@@ -2,6 +2,7 @@ const express = require("express");
 const app = express(); //create an express app
 const path = require("path"); //for using in express.static
 const session = require("express-session");
+// const flash=require("connect-flash");
 
 // for connecting the database
 const mongoConnect = require("./util/database").mongoConnect;
@@ -36,7 +37,7 @@ app.use(
   })
 );
 
-
+// app.use(flash());
 
 
 

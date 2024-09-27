@@ -1,10 +1,12 @@
 const getDb=require("../util/database").getDb;
 
 class User{
-    constructor(name,email,password){
+    constructor(name,email,password,resetToken,resetTokenExpiration){
         this.name=name;
         this.email=email;
         this.password=password;
+        this.resetToken=resetToken;
+        this.resetTokenExpiration=resetTokenExpiration
     }
     
     save(){
