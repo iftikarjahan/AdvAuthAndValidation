@@ -24,11 +24,29 @@ exports.page2Controller = (req, res, next) => {
 };
 
 exports.getLoginPage = (req, res, next) => {
-  res.render("loginPage");
+  let message=req.flash("error");
+  if(message.length>0){
+    message=message[0];
+  }
+  else{
+    message=null;
+  }
+  res.render("loginPage",{
+    errorMessage:message
+  });
 };
 
 exports.getSignInPage = (req, res, next) => {
-  res.render("signInPage");
+  let message=req.flash("error");
+  if(message.length>0){
+    message=message[0];
+  }
+  else{
+    message=null;
+  }
+  res.render("signInPage",{
+    errorMessage:message
+  });
 };
 
 exports.postSignInController = (req, res, next) => {
@@ -48,7 +66,8 @@ exports.postSignInController = (req, res, next) => {
     .findOne({ email: email })
     .then((user) => {
       if (user) {
-        return res.redirect("/login");
+        req.flash("error","User already exists. Please sign in with a diffrent account");
+        return res.redirect("/signIn");
       } else {
         return bcrypt
           .hash(password, 12)
@@ -93,6 +112,7 @@ exports.postLoginController = (req, res, next) => {
     .findOne({ email: email })
     .then((userDoc) => {
       if (!userDoc) {
+        req.flash("error","Invalid email or password. Please enter a valid email or create a new account");
         res.redirect("/signIn");
       } else {
         bcrypt
@@ -113,6 +133,7 @@ exports.postLoginController = (req, res, next) => {
                 }
               });
             } else {
+              req.flash("error","Incorrect Password🥲🥲")
               res.redirect("/login");
             }
           })

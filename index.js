@@ -37,7 +37,8 @@ app.use(
   })
 );
 
-// app.use(flash());
+const flash=require("connect-flash");
+app.use(flash());
 
 
 
