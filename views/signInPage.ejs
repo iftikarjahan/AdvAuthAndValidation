@@ -12,7 +12,7 @@
     <% } %>
     <div class="signin-container">
       <h2>Sign In</h2>
-      <form action="/signin" method="POST">
+      <form action="/signin" method="POST" novalidate>
         <label for="name">Name:</label>
         <input
           type="text"
@@ -36,6 +36,15 @@
           type="password"
           id="password"
           name="password"
+          placeholder="Enter your password"
+          required
+        />
+
+        <label for="confirm-password">Confirm Password:</label>
+        <input
+          type="password"
+          id="confirm-password"
+          name="confirm-password"
           placeholder="Enter your password"
           required
         />

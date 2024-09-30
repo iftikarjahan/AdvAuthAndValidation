@@ -4,6 +4,8 @@ const getDb = require("../util/database").getDb;
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
 const { ObjectId } = require("mongodb");
+// for validation
+const { validationResult } = require("express-validator");
 // email services
 const nodemailer = require("nodemailer");
 // transporter for sending mails
@@ -24,86 +26,78 @@ exports.page2Controller = (req, res, next) => {
 };
 
 exports.getLoginPage = (req, res, next) => {
-  let message=req.flash("error");
-  if(message.length>0){
-    message=message[0];
+  let message = req.flash("error");
+  if (message.length > 0) {
+    message = message[0];
+  } else {
+    message = null;
   }
-  else{
-    message=null;
-  }
-  res.render("loginPage",{
-    errorMessage:message
+  res.render("loginPage", {
+    errorMessage: message,
   });
 };
 
 exports.getSignInPage = (req, res, next) => {
-  let message=req.flash("error");
-  if(message.length>0){
-    message=message[0];
+  let message = req.flash("error");
+  if (message.length > 0) {
+    message = message[0];
+  } else {
+    message = null;
   }
-  else{
-    message=null;
-  }
-  res.render("signInPage",{
-    errorMessage:message
+  res.render("signInPage", {
+    errorMessage: message,
   });
 };
 
 exports.postSignInController = (req, res, next) => {
-  // console.log(req.body);
+  // this will collect all the errors that is present in the request and give it in the form of an array
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(422).render("signInPage", {
+      errorMessage: errors.array()[0].msg,
+    });
+  }
 
   // extracting the user credentials
   const name = req.body.name;
   const email = req.body.email;
   const password = req.body.password;
-  /*
-    ->Once you have extracted the user credintials, create a database user
-        ->If user already exists, redirect to signin page
-        ->if not, craete a new document
-    */
-  const db = getDb();
-  db.collection("users")
-    .findOne({ email: email })
-    .then((user) => {
-      if (user) {
-        req.flash("error","User already exists. Please sign in with a diffrent account");
-        return res.redirect("/signIn");
-      } else {
-        return bcrypt
-          .hash(password, 12)
-          .then((hashedPassword) => {
-            // using this hashed password, I need to create the user and store in db
-            const newUser = new User(name, email, hashedPassword);
-            return newUser.save(); //save() method returns a promise
-          })
-          .then((result) => {
-            // Send a welcome email on successful sign-in
-            const mailOptions = {
-              from: "iftikarjahan22@gmail.com", // Sender email
-              to: email, // Recipient email
-              subject: "Welcome to our authentication project", // Email subject
-              text: `Hello ${name}, welcome back to our service!`, // Plain text message
-              html: `<h1>Hello!</h1><p>Welcome back to our service, ${name}.</p>`, // HTML message
-            };
-
-            // Send the email
-            transporter.sendMail(mailOptions, (error, info) => {
-              if (error) {
-                console.error("Error sending email:", error);
-                return res.status(500).send("Error sending email");
-              }
-              console.log("Email sent:", info.response);
-            });
-            res.redirect("/login");
-          });
-      }
+  bcrypt
+    .hash(password, 12)
+    .then((hashedPassword) => {
+      // using this hashed password, I need to create the user and store in db
+      const newUser = new User(name, email, hashedPassword);
+      return newUser.save(); //save() method returns a promise
     })
-    .catch((err) => {
-      console.log(err);
+    .then((result) => {
+      // Send a welcome email on successful sign-in
+      const mailOptions = {
+        from: "iftikarjahan22@gmail.com", // Sender email
+        to: email, // Recipient email
+        subject: "Welcome to our authentication project", // Email subject
+        text: `Hello ${name}, welcome back to our service!`, // Plain text message
+        html: `<h1>Hello!</h1><p>Welcome back to our service, ${name}.</p>`, // HTML message
+      };
+
+      // Send the email
+      transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+          console.error("Error sending email:", error);
+          return res.status(500).send("Error sending email");
+        }
+        console.log("Email sent:", info.response);
+      });
+      res.redirect("/login");
     });
 };
 
 exports.postLoginController = (req, res, next) => {
+  const errors=validationResult(req);
+  if(!errors.isEmpty()){
+    return res.status(422).render("loginPage",{
+      errorMessage:errors.array()[0].msg
+    })
+  }
   const email = req.body.email;
   const password = req.body.password;
 
@@ -112,7 +106,10 @@ exports.postLoginController = (req, res, next) => {
     .findOne({ email: email })
     .then((userDoc) => {
       if (!userDoc) {
-        req.flash("error","Invalid email or password. Please enter a valid email or create a new account");
+        req.flash(
+          "error",
+          "Invalid email or password. Please enter a valid email or create a new account"
+        );
         res.redirect("/signIn");
       } else {
         bcrypt
@@ -133,7 +130,7 @@ exports.postLoginController = (req, res, next) => {
                 }
               });
             } else {
-              req.flash("error","Incorrect Password🥲🥲")
+              req.flash("error", "Incorrect Password🥲🥲");
               res.redirect("/login");
             }
           })
@@ -229,7 +226,7 @@ exports.getResetPasswordForm = (req, res, next) => {
     .findOne({ resetToken: token, resetTokenExpiration: { $gt: Date.now() } })
     .then((user) => {
       // console.log("USER: ", user);
-      
+
       res.render("resetPasswordForm", {
         userId: user._id.toString(),
         passToken: token,
@@ -246,7 +243,6 @@ exports.postAfterResetPasswordController = (req, res, next) => {
   const passToken = req.body.passToken;
   let resetUser;
   // console.log("userId: ",userId," passToken: ",passToken);
-  
 
   const db = getDb();
   db.collection("users")
@@ -257,7 +253,7 @@ exports.postAfterResetPasswordController = (req, res, next) => {
     })
     .then((user) => {
       // console.log("xxxXXX:  ", user);
-      
+
       resetUser = user;
       return bcrypt.hash(newPassword, 12);
     })
@@ -294,7 +290,6 @@ exports.postAfterResetPasswordController = (req, res, next) => {
         }
         console.log("Email sent:", info.response);
       });
-
     })
     .catch((err) => {
       console.log(err);
