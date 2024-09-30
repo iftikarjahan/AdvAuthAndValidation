@@ -34,6 +34,7 @@ exports.getLoginPage = (req, res, next) => {
   }
   res.render("loginPage", {
     errorMessage: message,
+    oldInputs:{email:"",password:""}
   });
 };
 
@@ -46,22 +47,36 @@ exports.getSignInPage = (req, res, next) => {
   }
   res.render("signInPage", {
     errorMessage: message,
+    oldInputs: {
+      name: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+    }
+    
   });
 };
 
 exports.postSignInController = (req, res, next) => {
+  // extracting the user credentials
+  const name = req.body.name;
+  const email = req.body.email;
+  const password = req.body.password;
+
   // this will collect all the errors that is present in the request and give it in the form of an array
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(422).render("signInPage", {
       errorMessage: errors.array()[0].msg,
+      oldInputs: {
+        name: name,
+        email: email,
+        password: password,
+        confirmPassword: req.body.confirmPassword,
+      },
     });
   }
 
-  // extracting the user credentials
-  const name = req.body.name;
-  const email = req.body.email;
-  const password = req.body.password;
   bcrypt
     .hash(password, 12)
     .then((hashedPassword) => {
@@ -92,14 +107,17 @@ exports.postSignInController = (req, res, next) => {
 };
 
 exports.postLoginController = (req, res, next) => {
-  const errors=validationResult(req);
-  if(!errors.isEmpty()){
-    return res.status(422).render("loginPage",{
-      errorMessage:errors.array()[0].msg
-    })
-  }
   const email = req.body.email;
   const password = req.body.password;
+
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(422).render("loginPage", {
+      errorMessage: errors.array()[0].msg,
+      oldInputs:{email:email,password:password}
+    });
+  }
+  
 
   const db = getDb();
   db.collection("users")

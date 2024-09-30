@@ -43,7 +43,7 @@ router.post(
       .withMessage(
         "Password should be at least 6 characters long and should also contain 1 lowecase and 1 uppercase character"
       ),
-    check("confirm-password").custom((value, { req }) => {
+    check("confirmPassword").custom((value, { req }) => {
       if (value !== req.body.password) {
         throw new Error("Passwords have to match");
       }

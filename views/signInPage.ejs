@@ -19,6 +19,7 @@
           id="name"
           name="name"
           placeholder="Enter your name"
+          value="<%= oldInputs.name %>"
           required
         />
 
@@ -28,6 +29,7 @@
           id="email"
           name="email"
           placeholder="Enter your email"
+          value="<%= oldInputs.email %>"
           required
         />
 
@@ -37,15 +39,17 @@
           id="password"
           name="password"
           placeholder="Enter your password"
+          value="<%= oldInputs.password %>"
           required
         />
 
-        <label for="confirm-password">Confirm Password:</label>
+        <label for="confirmPassword">Confirm Password:</label>
         <input
           type="password"
-          id="confirm-password"
-          name="confirm-password"
+          id="confirmPassword"
+          name="confirmPassword"
           placeholder="Enter your password"
+          value="<%= oldInputs.confirmPassword %>"
           required
         />
 
