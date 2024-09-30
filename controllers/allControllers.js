@@ -34,7 +34,8 @@ exports.getLoginPage = (req, res, next) => {
   }
   res.render("loginPage", {
     errorMessage: message,
-    oldInputs:{email:"",password:""}
+    oldInputs:{email:"",password:""},
+    errorsArray:[]
   });
 };
 
@@ -52,7 +53,8 @@ exports.getSignInPage = (req, res, next) => {
       email: "",
       password: "",
       confirmPassword: "",
-    }
+    },
+    errorsArray:[]
     
   });
 };
@@ -65,15 +67,26 @@ exports.postSignInController = (req, res, next) => {
 
   // this will collect all the errors that is present in the request and give it in the form of an array
   const errors = validationResult(req);
+  // console.log(errors.array());
+  let message;
+  errors.array().forEach(errObj => {
+    if(errObj.value.length>0){
+      message=errObj.msg
+    }
+  });
+  // console.log(message);
+  
+  
   if (!errors.isEmpty()) {
     return res.status(422).render("signInPage", {
-      errorMessage: errors.array()[0].msg,
+      errorMessage: message,
       oldInputs: {
         name: name,
         email: email,
         password: password,
         confirmPassword: req.body.confirmPassword,
       },
+      errorsArray:errors.array()
     });
   }
 
@@ -114,7 +127,8 @@ exports.postLoginController = (req, res, next) => {
   if (!errors.isEmpty()) {
     return res.status(422).render("loginPage", {
       errorMessage: errors.array()[0].msg,
-      oldInputs:{email:email,password:password}
+      oldInputs:{email:email,password:password},
+      errorsArray:errors.array()
     });
   }
   

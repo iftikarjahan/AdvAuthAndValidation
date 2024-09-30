@@ -15,6 +15,7 @@
       <form action="/signin" method="POST" novalidate>
         <label for="name">Name:</label>
         <input
+          class="<%= errorsArray.find(e=>e.path===`name`) ? `invalid` : `` %>"
           type="text"
           id="name"
           name="name"
@@ -25,6 +26,7 @@
 
         <label for="email">Email:</label>
         <input
+        class="<%= errorsArray.find(e=>e.path===`email`) ? `invalid` : `` %>"
           type="email"
           id="email"
           name="email"
@@ -35,6 +37,7 @@
 
         <label for="password">Password:</label>
         <input
+        class="<%= errorsArray.find(e=>e.path===`password`) ? `invalid` : `` %>"
           type="password"
           id="password"
           name="password"
@@ -45,6 +48,7 @@
 
         <label for="confirmPassword">Confirm Password:</label>
         <input
+        class="<%= errorsArray.find(e=>e.path===`confirmPassword`) ? `invalid` : `` %>"
           type="password"
           id="confirmPassword"
           name="confirmPassword"

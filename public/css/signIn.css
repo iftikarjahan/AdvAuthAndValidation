@@ -83,3 +83,7 @@ a {
   display: flex; /* Flexbox layout */
   align-items: center; /* Vertically center content */
 }
+
+.invalid{
+  border-color: red;
+}
