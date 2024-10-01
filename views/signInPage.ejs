@@ -12,7 +12,7 @@
     <% } %>
     <div class="signin-container">
       <h2>Sign In</h2>
-      <form action="/signin" method="POST" novalidate>
+      <form action="/signin" method="POST" novalidate enctype="multipart/form-data">
         <label for="name">Name:</label>
         <input
           class="<%= errorsArray.find(e=>e.path===`name`) ? `invalid` : `` %>"
@@ -23,6 +23,9 @@
           value="<%= oldInputs.name %>"
           required
         />
+
+        <label for="image">User Image:</label>
+        <input type="file" name="image" id="image"/>
 
         <label for="email">Email:</label>
         <input

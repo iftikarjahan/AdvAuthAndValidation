@@ -64,6 +64,9 @@ exports.postSignInController = (req, res, next) => {
   const name = req.body.name;
   const email = req.body.email;
   const password = req.body.password;
+  const image=req.file;
+  console.log(image);
+  
 
   // this will collect all the errors that is present in the request and give it in the form of an array
   const errors = validationResult(req);
